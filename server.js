@@ -1,28 +1,45 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 
 const app = express();
 
-app.get("/chocolate", (req, res) => {
-  const { line1, line2, line3 } = req.query;
-  res.send({
-    line1: "Milk chocolate",
-    line2: "Cocoa chocolate",
-    line3: line3,
-  });
-  console.log("this is the chocolate one");
+app.use(bodyParser.json());
+
+const albums = require("./album.json");
+
+app.get("/albums", (req, res) => {
+  res.json(albums);
+});
+app.post("/album", (req, res) => {
+  const { album } = req.body;
+  albums.push(album);
+  console.log(album);
+  res.json({ success: true });
 });
 
-app.get("/node", (req, res) => {
-  res.send("Hello node!");
-});
-app.get("/codeyourfuture", (req, res) => {
-  res.send("hello CYF!");
+app.get("/albums/:albumId", (req, res) => {
+  const { albumId } = req.params;
+  console.log(req.body);
+  const album = albums.find((x) => x.albumId === albumId);
+  if (album) {
+    res.send(album);
+  } else {
+    res.sendStatus(404);
+  }
 });
 
-app.get("/another", (req, res) => {
-  res.send("this is another one");
+app.delete("/albums/:albumId", (req, res) => {
+  const { albumId } = req.params;
+  const removeAlbum = albums.filter((x) => x.albumId !== albumId);
+
+  if (albums.length !== removeAlbum.length) {
+    albums = removeAlbum;
+    res.send({ message: "Album deleted" });
+  } else {
+    res.status(404).send("couldn't find such a thing you asked bitch!");
+  }
 });
 
-app.listen(3000, () => {
-  console.log("on port 3000");
+app.listen(4000, () => {
+  console.log("on port 4000");
 });
