@@ -5,41 +5,41 @@ const app = express();
 
 app.use(bodyParser.json());
 
-const albums = require("./album.json");
+const quotes = require("./quotes.json");
 
-app.get("/albums", (req, res) => {
-  res.json(albums);
+app.get("/quotes", (req, res) => {
+  res.json(quotes);
 });
-app.post("/album", (req, res) => {
-  const { album } = req.body;
-  albums.push(album);
-  console.log(album);
+app.post("/quotes", (req, res) => {
+  const { quote } = req.body;
+  quotes.push(quote);
+  console.log(quote);
   res.json({ success: true });
 });
 
-app.get("/albums/:albumId", (req, res) => {
-  const { albumId } = req.params;
+app.get("/quotes/:id", (req, res) => {
+  const { id } = req.params;
   console.log(req.body);
-  const album = albums.find((x) => x.albumId === albumId);
-  if (album) {
-    res.send(album);
+  const quote = quotes.find((x) => x.id === Number(id));
+  if (quote) {
+    res.send(quote);
   } else {
     res.sendStatus(404);
   }
 });
 
-app.delete("/albums/:albumId", (req, res) => {
-  const { albumId } = req.params;
-  const removeAlbum = albums.filter((x) => x.albumId !== albumId);
+app.delete("/quotes/:id", (req, res) => {
+  const { id } = req.params;
+  const removeQuote = albums.filter((x) => x.id !== Number(id));
 
-  if (albums.length !== removeAlbum.length) {
-    albums = removeAlbum;
-    res.send({ message: "Album deleted" });
+  if (quotes.length !== removeQuote.length) {
+    quotes = removeQuote;
+    res.send({ message: "quote deleted" });
   } else {
     res.status(404).send("couldn't find such a thing you asked bitch!");
   }
 });
 
-app.listen(4000, () => {
-  console.log("on port 4000");
+app.listen(5000, () => {
+  console.log("Listening to 5000");
 });
